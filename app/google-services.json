@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "308528721765",
+    "firebase_url": "https://recycling-organic-waste.firebaseio.com",
+    "project_id": "recycling-organic-waste",
+    "storage_bucket": "recycling-organic-waste.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:308528721765:android:45fe936523c4fc0af6bb8c",
+        "android_client_info": {
+          "package_name": "com.bisrihanafigmail.recyclingorganicwaste"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "308528721765-mrknqeceb7vcdnurd0hefi8hj119h7cu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6lkzVe-9RJaEKhuYE_HF7xlNURETq5AE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "308528721765-mrknqeceb7vcdnurd0hefi8hj119h7cu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

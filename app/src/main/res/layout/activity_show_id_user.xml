@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="225dp"
-        android:layout_height="222dp"
+        android:layout_width="169dp"
+        android:layout_height="152dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/id_pelanggan"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,12 +32,14 @@
 
     <TextView
         android:id="@+id/textView5"
-        android:layout_width="314dp"
-        android:layout_height="122dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
         android:gravity="center"
-        android:text="Silahkan diperlihatkan kepada petugas pengelola sebagai tanda pengenal"
-        android:textSize="24sp"
+        android:text="Silahkan diperlihatkan ID anda \n kepada petugas pengelola \nsebagai tanda pengenal"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/id_pelanggan" />

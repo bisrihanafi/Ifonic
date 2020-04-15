@@ -2,13 +2,16 @@ package com.bisrihanafigmail.recyclingorganicwaste;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -49,6 +52,8 @@ public class WaitingLayout extends AppCompatActivity {
         batalkan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                open(view);
+                /*
                 db.collection("quests").document(auth.getCurrentUser().getEmail())
                         .delete()
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -62,7 +67,44 @@ public class WaitingLayout extends AppCompatActivity {
                             public void onFailure(@NonNull Exception e) {
                             }
                         });
+
+                 */
             }
         });
+
+    }
+    public void open(View view) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Anda yakin akan membatalkan permintaan?");
+        alertDialogBuilder.setPositiveButton("Ya",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        db.collection("quests").document(auth.getCurrentUser().getEmail())
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        finish();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                    }
+                                });
+                        Toast.makeText(WaitingLayout.this, "Permintaan dibatalkan", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton("Tidak",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

@@ -1,5 +1,6 @@
 package com.bisrihanafigmail.recyclingorganicwaste;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,6 +39,7 @@ public class BaseActivityHome extends AppCompatActivity {
     TextView deposit, last_in,last_out;
     DocumentReference  dbref;
     FirebaseFirestore db;
+    double double_deposit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +108,11 @@ public class BaseActivityHome extends AppCompatActivity {
         pencairan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(BaseActivityHome.this, PencairanDana.class));
+                if (double_deposit>=10000d){
+                    openDialogMe(view);
+                }else {
+                    openDialogMe2(view);
+                }
 
             }
         });
@@ -131,7 +138,7 @@ public class BaseActivityHome extends AppCompatActivity {
         });
     }
     void setUiApp(String deposit_local, String in_local, String out_local){
-        double double_deposit= Double.parseDouble(deposit_local);
+        double_deposit= Double.parseDouble(deposit_local);
         double double_in= Double.parseDouble(in_local);
         double double_out= Double.parseDouble(out_local);
         DecimalFormat formatter = new DecimalFormat("#,###,###");
@@ -220,5 +227,40 @@ public class BaseActivityHome extends AppCompatActivity {
         if(authStateListener != null){
             auth.removeAuthStateListener(authStateListener);
         }
+    }
+    public void openDialogMe(View view) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Saat ini pengambilan dana hanya dapat dilakukan di tempat pengelolaan langsung. \nLanjutkan membuka panel pencairan dana?");
+        alertDialogBuilder.setPositiveButton("Ya",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        startActivity(new Intent(BaseActivityHome.this, PencairanDana.class));
+                        Toast.makeText(BaseActivityHome.this, "Panel terbuka", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton("Tidak",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+    public void openDialogMe2(View view) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Deposit anda belum mencapai batas minimal pencairan. Batas minimal pencairan deposit adalah Rp 10.000,-");
+        alertDialogBuilder.setPositiveButton("Mengerti",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

@@ -32,7 +32,6 @@ public class FormInputUser extends AppCompatActivity {
     boolean usesetting,usecatatan;
     EditText kabupaten,kecamatan,desa,dusun,rt,rw,catatan;
     String kabupaten_t,kecamatan_t,desa_t,dusun_t,rt_t,rw_t;
-    ScrollView alamat2;
     Button ok;
     FirebaseFirestore db;
     private FirebaseAuth auth;
@@ -46,7 +45,6 @@ public class FormInputUser extends AppCompatActivity {
         dusun=findViewById(R.id.dusun2);
         rt=findViewById(R.id.rt2);
         rw=findViewById(R.id.rw2);
-        alamat2=findViewById(R.id.scrollalamat);
         catatan=findViewById(R.id.catatan);
         ok=findViewById(R.id.ok);
         db = FirebaseFirestore.getInstance();
@@ -89,14 +87,23 @@ public class FormInputUser extends AppCompatActivity {
             case R.id.use_setting:
                 if (checked)
                     usesetting=true;
-                    alamat2.setVisibility(View.GONE);
-
-                break;
+                    kabupaten.setVisibility(View.GONE);
+                    kecamatan.setVisibility(View.GONE);
+                    desa.setVisibility(View.GONE);
+                    dusun.setVisibility(View.GONE);
+                    rt.setVisibility(View.GONE);
+                    rw.setVisibility(View.GONE);
+                    break;
             case R.id.use_new:
                 if (checked)
                     usesetting=false;
-                    alamat2.setVisibility(View.VISIBLE);
-                break;
+                    kabupaten.setVisibility(View.VISIBLE);
+                    kecamatan.setVisibility(View.VISIBLE);
+                    desa.setVisibility(View.VISIBLE);
+                    dusun.setVisibility(View.VISIBLE);
+                    rt.setVisibility(View.VISIBLE);
+                    rw.setVisibility(View.VISIBLE);
+                    break;
         }
     }
     public void itemClicked(View v) {

@@ -1,9 +1,11 @@
 package com.bisrihanafigmail.recyclingorganicwaste;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.usage.StorageStatsManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -66,7 +68,7 @@ public class SettingLayout extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Digunakan Untuk Logout
-                auth.signOut();
+                openDialogMe(view);
             }
         });
         save.setOnClickListener(new View.OnClickListener() {
@@ -162,5 +164,27 @@ public class SettingLayout extends AppCompatActivity {
                     }
                 });
 
+    }
+    public void openDialogMe(View view) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Anda akan mengeluarkan akun google anda dari aplikasi ini, data akan disimpan dan digunakan kembali ketika anda login");
+        alertDialogBuilder.setPositiveButton("Ya",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        auth.signOut();
+                        Toast.makeText(SettingLayout.this, "Ande telah Logout", Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton("Tidak",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

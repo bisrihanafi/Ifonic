@@ -188,7 +188,7 @@ public class BaseActivityHome extends AppCompatActivity {
         Map<String, Object> last_out_inf = new HashMap<>();
         last_out_inf.put("jumlah", 0);
         last_out_inf.put("time", currentTime.toString());
-        last_out_inf.put("izinkan", false);
+        last_out_inf.put("izin", false);
         transaksi.put("last_out_inf",last_out_inf);
 
 
@@ -199,7 +199,7 @@ public class BaseActivityHome extends AppCompatActivity {
         user_informasi.put("alamat",alamat);
         user.put("informasi", user_informasi);
         user.put("chat", chat);
-        user.put("log_transaski", transaksi);
+        user.put("log_transaksi", transaksi);
 
         // Add a new document with a generated ID
         db.collection("users").document(auth.getCurrentUser().getUid())

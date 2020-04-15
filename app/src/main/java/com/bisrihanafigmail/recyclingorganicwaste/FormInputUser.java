@@ -67,16 +67,22 @@ public class FormInputUser extends AppCompatActivity {
                     Map<String, Object> map= (Map<String, Object>) document.getData().get("informasi");
                     Map<String, Object> map3= (Map<String, Object>) map.get("alamat");
                     if (document.exists()) {
-                        kabupaten_t=map3.get("kabupaten").toString();
-                        kecamatan_t=map3.get("kecamatan").toString();
-                        desa_t=map3.get("desa").toString();
-                        dusun_t=map3.get("dusun").toString();
-                        rt_t=map3.get("rt").toString();
-                        rw_t=map3.get("rw").toString();
+                        kabupaten_t=map3.get("kabupaten").toString().trim();
+                        kecamatan_t=map3.get("kecamatan").toString().trim();
+                        desa_t=map3.get("desa").toString().trim();
+                        dusun_t=map3.get("dusun").toString().trim();
+                        rt_t=map3.get("rt").toString().trim();
+                        rw_t=map3.get("rw").toString().trim();
+                        if (kabupaten_t.equals("") || kecamatan_t.equals("") || desa_t.equals("") || dusun_t.equals("") || rt_t.equals("") || rw_t.equals("")){
+                            Toast.makeText(getApplicationContext(),"Lengkapi informasi terlebih dahulu",Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(FormInputUser.this, SettingLayout.class));
+                            finish();
+                        }
                     }
                 }
             }
         });
+
     }
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?

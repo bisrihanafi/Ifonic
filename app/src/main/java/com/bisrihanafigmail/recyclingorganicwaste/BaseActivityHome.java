@@ -47,6 +47,7 @@ public class BaseActivityHome extends AppCompatActivity {
         ImageButton setting= findViewById(R.id.pengaturan);
         ImageButton stor = findViewById(R.id.stor);
         ImageButton pencairan = findViewById(R.id.pencairan);
+        ImageButton chat = findViewById(R.id.chat);
 
         deposit=findViewById(R.id.deposit);
         last_in=findViewById(R.id.pemasukan);
@@ -117,7 +118,12 @@ public class BaseActivityHome extends AppCompatActivity {
             }
         });
 
-
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(BaseActivityHome.this, ChatRoomMe.class));
+            }
+        });
         dbref=db.collection("users").document(auth.getCurrentUser().getUid());
         dbref.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -157,7 +163,7 @@ public class BaseActivityHome extends AppCompatActivity {
         user_basic.put("last_in", 0);
         user_basic.put("last_out", 0);
 
-        //Alamat collection
+        //Alamat
         Map<String, Object> alamat = new HashMap<>();
         alamat.put("kabupaten", "");
         alamat.put("kecamatan", "");
@@ -166,15 +172,7 @@ public class BaseActivityHome extends AppCompatActivity {
         alamat.put("rt", 0);
         alamat.put("rw", 0);
 
-        //Chat
-        Map<String, Object> chat = new HashMap<>();
         Date currentTime = Calendar.getInstance().getTime();
-        Map<String, Object> pesan = new HashMap<>();
-        pesan.put("count", "");
-        pesan.put("time", currentTime.toString());
-        pesan.put("from", "");
-        pesan.put("fill", "");
-        chat.put(currentTime.toString(), pesan);
 
         //Transaksi
         Map<String, Object> transaksi = new HashMap<>();
@@ -191,29 +189,23 @@ public class BaseActivityHome extends AppCompatActivity {
         last_out_inf.put("izin", false);
         transaksi.put("last_out_inf",last_out_inf);
 
-
         //Add Collcetion Extend
         Map<String, Object> user = new HashMap<>();
         Map<String, Object> user_informasi = new HashMap<>();
         user_informasi.put("user_basic",user_basic);
         user_informasi.put("alamat",alamat);
         user.put("informasi", user_informasi);
-        user.put("chat", chat);
         user.put("log_transaksi", transaksi);
 
         // Add a new document with a generated ID
-        db.collection("users").document(auth.getCurrentUser().getUid())
-                .set(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                    }
-                });
+        db.collection("users").document(auth.getCurrentUser().getUid()).set(user);
+
+        Map<String, Object> pesan = new HashMap<>();
+        pesan.put("count", "");
+        pesan.put("time", currentTime.toString());
+        pesan.put("from", "");
+        pesan.put("fill", "");
+        db.collection("users").document(auth.getCurrentUser().getUid()).collection("chat").document().set(pesan);
     }
     @Override
     protected void onStart() {

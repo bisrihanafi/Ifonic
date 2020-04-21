@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        <activity android:name=".PencairanDana"></activity>
+        <activity android:name=".ChatRoomMe"></activity>
+        <activity android:name=".PencairanDana" />
         <activity android:name=".SettingLayout" />
         <activity android:name=".WaitingLayout" />
         <activity android:name=".FormInputUser" />

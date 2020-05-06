@@ -3,7 +3,6 @@ package com.bisrihanafigmail.recyclingorganicwaste;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -15,8 +14,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -24,8 +21,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
@@ -48,7 +43,8 @@ public class BaseActivityHome extends AppCompatActivity {
         ImageButton stor = findViewById(R.id.stor);
         ImageButton pencairan = findViewById(R.id.pencairan);
         ImageButton chat = findViewById(R.id.chat);
-
+        ImageButton help = findViewById(R.id.helpbase);
+        TextView chat2 = findViewById(R.id.chat2);
         deposit=findViewById(R.id.deposit);
         last_in=findViewById(R.id.pemasukan);
         last_out=findViewById(R.id.pengeluaran);
@@ -106,6 +102,13 @@ public class BaseActivityHome extends AppCompatActivity {
 
             }
         });
+        help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(BaseActivityHome.this, Help.class));
+
+            }
+        });
         pencairan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,7 +127,13 @@ public class BaseActivityHome extends AppCompatActivity {
                 startActivity(new Intent(BaseActivityHome.this, ChatRoomMe.class));
             }
         });
-        dbref=db.collection("users").document(auth.getCurrentUser().getUid());
+        chat2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(BaseActivityHome.this, ChatRoomMe.class));
+            }
+        });
+        dbref=db.collection("users").document(auth.getCurrentUser().getEmail());
         dbref.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -155,7 +164,6 @@ public class BaseActivityHome extends AppCompatActivity {
     void buatDatabase(){
         // Create a new user with a first and last name
         Map<String, Object> user_basic = new HashMap<>();
-        user_basic.put("id_google_account", auth.getCurrentUser().getUid());
         user_basic.put("nama_google", auth.getCurrentUser().getDisplayName());
         user_basic.put("email", auth.getCurrentUser().getEmail());
         user_basic.put("nama", "");
@@ -174,20 +182,12 @@ public class BaseActivityHome extends AppCompatActivity {
 
         Date currentTime = Calendar.getInstance().getTime();
 
-        //Transaksi
-        Map<String, Object> transaksi = new HashMap<>();
-        Map<String, Object> isi = new HashMap<>();
-        isi.put("count", "");
-        isi.put("time", currentTime.toString());
-        isi.put("type", "");
-        isi.put("fill", 0);
-        transaksi.put(currentTime.toString(), isi);
+
         //penarikan
         Map<String, Object> last_out_inf = new HashMap<>();
         last_out_inf.put("jumlah", 0);
         last_out_inf.put("time", currentTime.toString());
         last_out_inf.put("izin", false);
-        transaksi.put("last_out_inf",last_out_inf);
 
         //Add Collcetion Extend
         Map<String, Object> user = new HashMap<>();
@@ -195,17 +195,27 @@ public class BaseActivityHome extends AppCompatActivity {
         user_informasi.put("user_basic",user_basic);
         user_informasi.put("alamat",alamat);
         user.put("informasi", user_informasi);
-        user.put("log_transaksi", transaksi);
+        user.put("sedang_transaksi", last_out_inf);
 
         // Add a new document with a generated ID
-        db.collection("users").document(auth.getCurrentUser().getUid()).set(user);
+        db.collection("users").document(auth.getCurrentUser().getEmail()).set(user);
+
 
         Map<String, Object> pesan = new HashMap<>();
-        pesan.put("count", "");
+        pesan.put("count", 0);
         pesan.put("time", currentTime.toString());
-        pesan.put("from", "");
-        pesan.put("fill", "");
-        db.collection("users").document(auth.getCurrentUser().getUid()).collection("chat").document().set(pesan);
+        pesan.put("from", "System");
+        pesan.put("fill", "Hallo, selamat datang di chat room");
+        db.collection("users").document(auth.getCurrentUser().getEmail()).collection("chat").document().set(pesan);
+
+        //Transaksi
+        Map<String, Object> transaksi = new HashMap<>();
+        transaksi.put("count", 0);
+        transaksi.put("time", currentTime.toString());
+        transaksi.put("type", "");
+        transaksi.put("fill", 0);
+        db.collection("users").document(auth.getCurrentUser().getEmail()).collection("log_transaksi").document().set(transaksi);
+
     }
     @Override
     protected void onStart() {

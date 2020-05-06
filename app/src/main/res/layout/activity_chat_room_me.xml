@@ -7,19 +7,6 @@
     android:background="@drawable/background3"
     tools:context=".ChatRoomMe">
 
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Tim Petugas"
-        android:textColor="#F33C3C"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <WebView
         android:id="@+id/webView"
         android:layout_width="0dp"
@@ -28,15 +15,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView12" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/papaninput"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="16dp"
         android:ems="10"
         android:hint="Tulis pesan..."
         android:inputType="textPersonName"
+        android:singleLine="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/senderbutton"
         app:layout_constraintStart_toStartOf="parent"

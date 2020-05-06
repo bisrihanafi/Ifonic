@@ -1,10 +1,5 @@
 package com.bisrihanafigmail.recyclingorganicwaste;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -12,10 +7,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -23,7 +18,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Calendar;
@@ -34,7 +28,7 @@ import java.util.Map;
 public class ChatRoomMe extends AppCompatActivity {
     private WebView webView = null;
     Button send;
-    final String styleme="<html><body>" +
+    final String styleme="<html><head>" +
             "<style>\n" +
             "ul{\n" +
             "  list-style: none;\n" +
@@ -45,7 +39,7 @@ public class ChatRoomMe extends AppCompatActivity {
             "ul li{\n" +
             "  display:inline-block;\n" +
             "  clear: both;\n" +
-            "  padding: 20px;\n" +
+            "  padding: 10px;\n" +
             "  border-radius: 30px;\n" +
             "  margin-bottom: 2px;\n" +
             "  font-family: Helvetica, Arial, sans-serif;\n" +
@@ -61,8 +55,17 @@ public class ChatRoomMe extends AppCompatActivity {
             "  background: #0084ff;\n" +
             "  color: #fff;\n" +
             "}\n" +
+            "div {\n" +
+            "  background-color: lightgrey;\n" +
+
+            "  border: 2px solid green;\n" +
+            "  padding: 40px;\n" +
+            "  margin: 20px;\n" +
+            "}" +
             "</style>\n" +
-            "</head>"+
+            "</head><body>" +
+            "<div>Ini adalah layanan pesan singkat pelanggan dan petugas, petugas yang membalas mungkin akan berbeda orang. Mohon untuk menghindari pembincaraan yang bersifat intens.</div>" +
+            ""+
             "<ul>\n";;
     final String footer="</ul>" +
             "<script>window.scrollTo(0, document.body.scrollHeight);</script>" +
@@ -81,19 +84,21 @@ public class ChatRoomMe extends AppCompatActivity {
         webView=findViewById(R.id.webView);
         send=findViewById(R.id.senderbutton);
         papanInput=findViewById(R.id.papaninput);
-        WebSettings webSettings = webView.getSettings();
+        final WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient());
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         //data=" <li class=\"him\">By Other User</li>\n" +" <li class=\"me\">By this User, first message</li>\n" ;
 
-        db.collection("users").document(auth.getCurrentUser().getUid()).collection("chat").orderBy("count").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        db.collection("users").document(auth.getCurrentUser().getEmail()).collection("chat").orderBy("count").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
                     return;
                 }
+
+
                 data=new StringBuffer("");
                 count_maxed=queryDocumentSnapshots.size()+1;
                 for (DocumentSnapshot doc : queryDocumentSnapshots) {
@@ -101,18 +106,22 @@ public class ChatRoomMe extends AppCompatActivity {
                         data.append("<li class=\"me\">"+doc.get("fill")+"</li>\n");
 
                     }else{
-                        data.append("<li class=\"him\">"+doc.get("fill")+"</li>\n");
+                        data.append("<li class=\"him\">"+"<font style=\"color:blue\">@"+doc.get("from")+"</font> : "+doc.get("fill")+"</li>\n");
                     }
                 }
                 webView.loadDataWithBaseURL(null,styleme+data+footer,"text/HTML","utf-8",null);
+                webView.scrollBy(0, webView.getVerticalScrollbarPosition()+1000);
             }
         });
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                kirimPesan(papanInput.getText().toString());
-                papanInput.setText("");
+                if (!papanInput.getText().toString().trim().equalsIgnoreCase("")){
+                    kirimPesan(papanInput.getText().toString());
+                    papanInput.setText("");
+                }
+
             }
         });
     }
@@ -123,6 +132,6 @@ public class ChatRoomMe extends AppCompatActivity {
         chat.put("fill", isi);
         Date currentTime = Calendar.getInstance().getTime();
         chat.put("time", currentTime);
-        db.collection("users").document(auth.getCurrentUser().getUid()).collection("chat").document().set(chat);
+        db.collection("users").document(auth.getCurrentUser().getEmail()).collection("chat").document().set(chat);
     }
 }

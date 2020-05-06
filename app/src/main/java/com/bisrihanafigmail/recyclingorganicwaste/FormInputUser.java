@@ -1,10 +1,5 @@
 package com.bisrihanafigmail.recyclingorganicwaste;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,8 +7,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.ScrollView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -55,10 +52,11 @@ public class FormInputUser extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 buatQuest(usesetting, usecatatan);
+
             }
         });
         db.collection("users")
-                .document(auth.getCurrentUser().getUid())
+                .document(auth.getCurrentUser().getEmail())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -126,6 +124,8 @@ public class FormInputUser extends AppCompatActivity {
     }
     void buatQuest(boolean use_setting, boolean use_catatan){
         // Create a new user with a first and last name
+
+
         Map<String, Object> quest = new HashMap<>();
         quest.put("id_user", auth.getCurrentUser().getEmail());
         quest.put("nama_user", auth.getCurrentUser().getDisplayName());
@@ -139,16 +139,32 @@ public class FormInputUser extends AppCompatActivity {
             quest.put("rw", rw_t);
         }else {
             //alamt baru
-            quest.put("kabupaten", kabupaten.getText().toString().trim());
-            quest.put("kecamatan", kecamatan.getText().toString().trim());
-            quest.put("desa", desa.getText().toString().trim());
-            quest.put("dusun", dusun.getText().toString().trim());
-            quest.put("rt", rt.getText().toString().trim());
-            quest.put("rw", rw.getText().toString().trim());
+            String kabupaten_u=kabupaten.getText().toString().trim();
+            String kecamatan_u=kecamatan.getText().toString().trim();
+            String desa_u=desa.getText().toString().trim();
+            String dusun_u=dusun.getText().toString().trim();
+            String rt_u=rt.getText().toString().trim();
+            String rw_u=rw.getText().toString().trim();
+            if (!kabupaten_u.isEmpty() && !kecamatan_u.isEmpty() && !desa_u.isEmpty() && !dusun_u.isEmpty() && !rt_u.isEmpty() && !rw_u.isEmpty()) {
+                quest.put("kabupaten", kabupaten_u);
+                quest.put("kecamatan", kecamatan_u);
+                quest.put("desa", desa_u);
+                quest.put("dusun", dusun_u);
+                quest.put("rt", rt_u);
+                quest.put("rw", rw_u);
+            }else{
+                Toast.makeText(getApplicationContext(),"Lengkapi informasi terlebih dahulu",Toast.LENGTH_LONG).show();
+                return;
+            }
         }
-
         if (use_catatan) {
-            quest.put("catatan", catatan.getText().toString().trim());
+            String cc=catatan.getText().toString().trim();
+            if (!cc.isEmpty()) {
+                quest.put("catatan", cc);
+            }else {
+                Toast.makeText(getApplicationContext(),"Lengkapi informasi terlebih dahulu",Toast.LENGTH_LONG).show();
+                return;
+            }
         }else{
             quest.put("catatan", "");
         }

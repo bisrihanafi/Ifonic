@@ -1,15 +1,14 @@
 package com.bisrihanafigmail.recyclingorganicwaste;
 
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,7 +39,7 @@ public class PencairanDana extends AppCompatActivity {
         auth = FirebaseAuth.getInstance(); //Menghubungkan dengan Firebase Authentifikasi
         alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialog = alertDialogBuilder.create();
-        dbref=db.collection("users").document(auth.getCurrentUser().getUid());
+        dbref=db.collection("users").document(auth.getCurrentUser().getEmail());
         dbref.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -49,14 +48,12 @@ public class PencairanDana extends AppCompatActivity {
                     return;
                 }
                 if (snapshot != null && snapshot.exists()) {
-                    Map<String, Object> map= (Map<String, Object>) snapshot.getData().get("log_transaksi");
-                    Map<String, Object> map2= (Map<String, Object>) map.get("last_out_inf");
-                    //Toast.makeText(getApplicationContext(),map3.get("nama").toString(),Toast.LENGTH_LONG).show();
-                    double jumlah_decimal=Double.parseDouble(map2.get("jumlah").toString());
-                    boolean izin=Boolean.parseBoolean(map2.get("izin").toString());
+                    Map<String, Object> map= (Map<String, Object>) snapshot.getData().get("sedang_transaksi");
+                    double jumlah_decimal=Double.parseDouble(map.get("jumlah").toString());
+                    boolean izin=Boolean.parseBoolean(map.get("izin").toString());
                     if (alertDialog.isShowing())alertDialog.hide();
                     if (jumlah_decimal>0d && !izin){
-                        openDialogConfirmPencairan(jumlah_decimal, map2.get("time").toString());
+                        openDialogConfirmPencairan(jumlah_decimal, map.get("time").toString());
                     }
                 } else {
                 }
@@ -70,9 +67,9 @@ public class PencairanDana extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        db.collection("users").document(auth.getCurrentUser().getUid())
+                        db.collection("users").document(auth.getCurrentUser().getEmail())
                                 .update(
-                                        "log_transaksi.last_out_inf.izin", true
+                                        "sedang_transaksi.izin", true
                                 )
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -92,10 +89,10 @@ public class PencairanDana extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        db.collection("users").document(auth.getCurrentUser().getUid())
+                        db.collection("users").document(auth.getCurrentUser().getEmail())
                                 .update(
-                                        "log_transaksi.last_out_inf.jumlah", 0,
-                                        "log_transaksi.last_out_inf.izin", false
+                                        "sedang_transaksi.jumlah", 0,
+                                        "sedang_transaksi.izin", false
                                 )
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override

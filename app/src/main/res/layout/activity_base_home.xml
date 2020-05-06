@@ -9,7 +9,7 @@
     tools:context=".BaseActivityHome">
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/helpbase"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="32dp"
@@ -170,5 +170,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/pencairan" />
+
+    <TextView
+        android:id="@+id/chat2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:text="Chating"
+        android:textAlignment="viewStart"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/chat"
+        app:layout_constraintTop_toTopOf="@+id/chat" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

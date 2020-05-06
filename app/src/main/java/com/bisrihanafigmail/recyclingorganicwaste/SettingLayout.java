@@ -1,14 +1,8 @@
 package com.bisrihanafigmail.recyclingorganicwaste;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.usage.StorageStatsManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,12 +11,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -81,7 +78,7 @@ public class SettingLayout extends AppCompatActivity {
         nama.setText(auth.getCurrentUser().getDisplayName());
 
         db.collection("users")
-                .document(auth.getCurrentUser().getUid())
+                .document(auth.getCurrentUser().getEmail())
                 .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -140,7 +137,7 @@ public class SettingLayout extends AppCompatActivity {
     }
 
     void saveValueFromUI(){
-        db.collection("users").document(auth.getCurrentUser().getUid())
+        db.collection("users").document(auth.getCurrentUser().getEmail())
                 .update(
                         "informasi.user_basic.nama", nama_user.getText().toString().trim(),
                         "informasi.alamat.kabupaten", kabupaten.getText().toString().trim(),

@@ -32,9 +32,8 @@ public class BaseActivityHome extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener authStateListener;
     TextView deposit, last_in,last_out;
-    DocumentReference  dbref;
     FirebaseFirestore db;
-    double double_deposit;
+    double double_deposit,min_cair=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +74,25 @@ public class BaseActivityHome extends AppCompatActivity {
             }
         });
         */
+        db.collection("system").document("aturan")
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            return;
+                        }
+                        if (snapshot != null && snapshot.exists()) {
+                            min_cair=Double.parseDouble(snapshot.get("minimalpencairan").toString().trim());
+                            if (!snapshot.get("versi").toString().trim().equalsIgnoreCase("1")){
+                                Toast.makeText(getApplicationContext(),"Aplikasi Kadaluarsa",Toast.LENGTH_LONG).show();
+                                finish();
+                            }else {
+                                ambildata();
+                            }
+                        }
+                    }
+                });
         stor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,7 +130,7 @@ public class BaseActivityHome extends AppCompatActivity {
         pencairan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (double_deposit>=10000d){
+                if (double_deposit>=min_cair){
                     openDialogMe(view);
                 }else {
                     openDialogMe2(view);
@@ -133,29 +151,33 @@ public class BaseActivityHome extends AppCompatActivity {
                 startActivity(new Intent(BaseActivityHome.this, ChatRoomMe.class));
             }
         });
-        dbref=db.collection("users").document(auth.getCurrentUser().getEmail());
-        dbref.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    return;
-                }
-                if (snapshot != null && snapshot.exists()) {
-                    Map<String, Object> map= (Map<String, Object>) snapshot.getData().get("informasi");
-                    Map<String, Object> map2= (Map<String, Object>) map.get("user_basic");
-                    //Toast.makeText(getApplicationContext(),map3.get("nama").toString(),Toast.LENGTH_LONG).show();
-                    setUiApp(map2.get("deposit").toString(), map2.get("last_in").toString(),map2.get("last_out").toString());
-                } else {
-                    buatDatabase();
-                }
-            }
-        });
+
+
+    }
+    void ambildata(){
+        db.collection("users").document(auth.getCurrentUser().getEmail())
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            return;
+                        }
+                        if (snapshot != null && snapshot.exists()) {
+                            Map<String, Object> map= (Map<String, Object>) snapshot.getData().get("informasi");
+                            Map<String, Object> map2= (Map<String, Object>) map.get("user_basic");
+                            //Toast.makeText(getApplicationContext(),map3.get("nama").toString(),Toast.LENGTH_LONG).show();
+                            setUiApp(map2.get("deposit").toString(), map2.get("last_in").toString(),map2.get("last_out").toString());
+                        } else {
+                            buatDatabase();
+                        }
+                    }
+                });
     }
     void setUiApp(String deposit_local, String in_local, String out_local){
-        double_deposit= Double.parseDouble(deposit_local);
-        double double_in= Double.parseDouble(in_local);
-        double double_out= Double.parseDouble(out_local);
+        double_deposit= Math.floor(Double.parseDouble(deposit_local));
+        double double_in= Math.floor(Double.parseDouble(in_local));
+        double double_out= Math.floor(Double.parseDouble(out_local));
         DecimalFormat formatter = new DecimalFormat("#,###,###");
         deposit.setText("Rp "+formatter.format(double_deposit));
         last_in.setText("+Rp "+formatter.format(double_in));
@@ -208,14 +230,6 @@ public class BaseActivityHome extends AppCompatActivity {
         pesan.put("fill", "Hallo, selamat datang di chat room");
         db.collection("users").document(auth.getCurrentUser().getEmail()).collection("chat").document().set(pesan);
 
-        //Transaksi
-        Map<String, Object> transaksi = new HashMap<>();
-        transaksi.put("count", 0);
-        transaksi.put("time", currentTime.toString());
-        transaksi.put("type", "");
-        transaksi.put("fill", 0);
-        db.collection("users").document(auth.getCurrentUser().getEmail()).collection("log_transaksi").document().set(transaksi);
-
     }
     @Override
     protected void onStart() {
@@ -253,8 +267,9 @@ public class BaseActivityHome extends AppCompatActivity {
         alertDialog.show();
     }
     public void openDialogMe2(View view) {
+        DecimalFormat formatter = new DecimalFormat("#,###,###");
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Deposit anda belum mencapai batas minimal pencairan. Batas minimal pencairan deposit adalah Rp 10.000,-");
+        alertDialogBuilder.setMessage("Deposit anda belum mencapai batas minimal pencairan. Batas minimal pencairan deposit adalah Rp "+formatter.format(min_cair)+",-");
         alertDialogBuilder.setPositiveButton("Mengerti",
                 new DialogInterface.OnClickListener() {
                     @Override

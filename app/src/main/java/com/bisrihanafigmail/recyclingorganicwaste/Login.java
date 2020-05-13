@@ -91,7 +91,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
         startActivityForResult(GSignIN, RC_SIGN_ID);
         progressDialog.setMessage("Mohon Tunggu...");
         progressDialog.setIndeterminate(true);
-        progressDialog.show();    }
+        progressDialog.show();
+    }
     //Untuk Mengangani Kejadian Saat Pengguna Berhasil Login
     private void firebaseAuthWithGoogle(GoogleSignInAccount account){
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());

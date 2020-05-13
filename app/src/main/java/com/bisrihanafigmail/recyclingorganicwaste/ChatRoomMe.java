@@ -72,7 +72,6 @@ public class ChatRoomMe extends AppCompatActivity {
             "</body></html>";
     StringBuffer data;
     private FirebaseAuth auth;
-    DocumentReference dbref;
     FirebaseFirestore db;
     CollectionReference idsRef;
     EditText papanInput;

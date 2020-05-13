@@ -38,7 +38,12 @@ public class WaitingLayout extends AppCompatActivity {
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
+                    Toast.makeText(WaitingLayout.this, "Return by exception", Toast.LENGTH_SHORT).show();
                     return;
+                }
+                if (!snapshot.exists()) {
+                    Toast.makeText(WaitingLayout.this, "Selesai", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
                 if (snapshot != null && snapshot.exists()) {
                     admin.setText(snapshot.getData().get("nama_admin").toString()+" mengambil");

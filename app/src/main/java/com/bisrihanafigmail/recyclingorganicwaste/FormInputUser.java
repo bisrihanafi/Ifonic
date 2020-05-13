@@ -28,7 +28,7 @@ import java.util.Map;
 public class FormInputUser extends AppCompatActivity {
     boolean usesetting,usecatatan;
     EditText kabupaten,kecamatan,desa,dusun,rt,rw,catatan;
-    String kabupaten_t,kecamatan_t,desa_t,dusun_t,rt_t,rw_t;
+    String kabupaten_t,kecamatan_t,desa_t,dusun_t,rt_t,rw_t,alias;
     Button ok;
     FirebaseFirestore db;
     private FirebaseAuth auth;
@@ -76,6 +76,10 @@ public class FormInputUser extends AppCompatActivity {
                             startActivity(new Intent(FormInputUser.this, SettingLayout.class));
                             finish();
                         }
+                    }
+                    Map<String, Object> map4= (Map<String, Object>) map.get("user_basic");
+                    if (document.exists()) {
+                        alias=map4.get("nama").toString().trim();
                     }
                 }
             }
@@ -129,6 +133,7 @@ public class FormInputUser extends AppCompatActivity {
         Map<String, Object> quest = new HashMap<>();
         quest.put("id_user", auth.getCurrentUser().getEmail());
         quest.put("nama_user", auth.getCurrentUser().getDisplayName());
+        quest.put("nama_alias", alias);
         Date currentTime = Calendar.getInstance().getTime();
         if(use_setting){
             quest.put("kabupaten", kabupaten_t);
@@ -170,7 +175,7 @@ public class FormInputUser extends AppCompatActivity {
         }
         quest.put("id_admin", "");
         quest.put("nama_admin", "");
-        quest.put("keterangan", "proses");
+        quest.put("keterangan", "quest");
         quest.put("time",currentTime.toString());
         //Toast.makeText(getApplicationContext(),kabupaten_t,Toast.LENGTH_LONG).show();
 

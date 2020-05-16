@@ -2,6 +2,7 @@ package com.bisrihanafigmail.recyclingorganicwaste;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -106,10 +107,15 @@ public class PencairanDana extends AppCompatActivity {
                                         Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
                                     }
                                 });
+
                     }
                 });
         alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
-
+        try {
+            alertDialog.show();
+        }
+        catch (WindowManager.BadTokenException e) {
+            System.err.println("Error saat menampilkan kotak dialog");
+        }
     }
 }

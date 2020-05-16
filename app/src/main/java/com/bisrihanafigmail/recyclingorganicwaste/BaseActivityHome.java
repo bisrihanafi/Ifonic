@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -264,7 +265,12 @@ public class BaseActivityHome extends AppCompatActivity {
                 });
 
         AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        try {
+            alertDialog.show();
+        }
+        catch (WindowManager.BadTokenException e) {
+            System.err.println("Error saat menampilkan kotak dialog");
+        }
     }
     public void openDialogMe2(View view) {
         DecimalFormat formatter = new DecimalFormat("#,###,###");
@@ -278,6 +284,11 @@ public class BaseActivityHome extends AppCompatActivity {
                 });
 
         AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        try {
+            alertDialog.show();
+        }
+        catch (WindowManager.BadTokenException e) {
+            System.err.println("Error saat menampilkan kotak dialog");
+        }
     }
 }

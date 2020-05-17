@@ -12,7 +12,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
-        <activity android:name=".Help"></activity>
+        <service
+            android:name=".IfonicNotificationService"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <activity android:name=".Help" />
         <activity android:name=".ChatRoomMe" />
         <activity android:name=".PencairanDana" />
         <activity android:name=".SettingLayout" />

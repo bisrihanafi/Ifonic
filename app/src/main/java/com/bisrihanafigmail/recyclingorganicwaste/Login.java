@@ -38,11 +38,14 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     private final int RC_SIGN_ID = 9001; //Kode Unik Untuk SignIn
     private final String TAG = "SignInAcivity";  //Untuk Log Debugging
     private FirebaseAnalytics firebaseAnalytics;
+    Intent notifService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
+        notifService = new Intent(this, IfonicNotificationService.class);//Service
         googleButton = findViewById(R.id.login_google);
         FirebaseConnect();
         googleButton.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +71,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
                  * Saat aplikasi dibuka kembali, Activity ini akan langsung dialihkan pada Activiy MainMenu
                  */
                 if(firebaseAuth.getCurrentUser() != null){
+                    startService(notifService);
                     startActivity(new Intent(Login.this,BaseActivityHome.class));
                     finish();
                 }
@@ -132,6 +136,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     protected void onStop() {
         super.onStop();
         if(authStateListener != null){
+            stopService(notifService);
             firebaseAuth.removeAuthStateListener(authStateListener);
         }
     }

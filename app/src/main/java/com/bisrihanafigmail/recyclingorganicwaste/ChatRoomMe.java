@@ -1,5 +1,7 @@
 package com.bisrihanafigmail.recyclingorganicwaste;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -28,6 +30,7 @@ import java.util.Map;
 public class ChatRoomMe extends AppCompatActivity {
     private WebView webView = null;
     Button send;
+    NotificationManager notif_manager;
     final String styleme="<html><head>" +
             "<style>\n" +
             "ul{\n" +
@@ -67,7 +70,7 @@ public class ChatRoomMe extends AppCompatActivity {
             "<div>Ini adalah layanan pesan singkat pelanggan dan petugas, petugas yang membalas mungkin akan berbeda orang. Mohon untuk menghindari pembincaraan yang bersifat intens.</div>" +
             ""+
             "<ul>\n";;
-    final String footer="</ul>" +
+    final String footer="</ul><br>" +
             "<script>window.scrollTo(0, document.body.scrollHeight);</script>" +
             "</body></html>";
     StringBuffer data;
@@ -84,10 +87,12 @@ public class ChatRoomMe extends AppCompatActivity {
         send=findViewById(R.id.senderbutton);
         papanInput=findViewById(R.id.papaninput);
         final WebSettings webSettings = webView.getSettings();
+        notif_manager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         webSettings.setJavaScriptEnabled(true);
         webView.setWebViewClient(new WebViewClient());
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
+        notif_manager.cancelAll();
         //data=" <li class=\"him\">By Other User</li>\n" +" <li class=\"me\">By this User, first message</li>\n" ;
 
         db.collection("users").document(auth.getCurrentUser().getEmail()).collection("chat").orderBy("count").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -119,6 +124,7 @@ public class ChatRoomMe extends AppCompatActivity {
                 if (!papanInput.getText().toString().trim().equalsIgnoreCase("")){
                     kirimPesan(papanInput.getText().toString());
                     papanInput.setText("");
+                    notif_manager.cancelAll();
                 }
 
             }
@@ -133,4 +139,5 @@ public class ChatRoomMe extends AppCompatActivity {
         chat.put("time", currentTime);
         db.collection("users").document(auth.getCurrentUser().getEmail()).collection("chat").document().set(chat);
     }
+
 }

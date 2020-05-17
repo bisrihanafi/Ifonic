@@ -42,7 +42,6 @@ public class WaitingLayout extends AppCompatActivity {
                     return;
                 }
                 if (!snapshot.exists()) {
-                    Toast.makeText(WaitingLayout.this, "Selesai", Toast.LENGTH_SHORT).show();
                     finish();
                 }
                 if (snapshot != null && snapshot.exists()) {

@@ -65,7 +65,7 @@ public class ChatRoomMe extends AppCompatActivity {
             "}" +
             "</style>\n" +
             "</head><body>" +
-            "<div>Ini adalah layanan pesan singkat pelanggan dan petugas, petugas yang membalas mungkin akan berbeda orang. Mohon untuk menghindari pembincaraan yang bersifat intens.</div>" +
+            "<div>Ini adalah layanan pesan singkat pelanggan dan petugas, petugas yang membalas mungkin akan berbeda orang.</div>" +
             ""+
             "<ul>\n";;
     final String footer="</ul><br>" +

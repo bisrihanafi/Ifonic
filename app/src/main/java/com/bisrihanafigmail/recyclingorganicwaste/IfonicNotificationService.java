@@ -27,7 +27,7 @@ public class IfonicNotificationService extends Service {
     FirebaseFirestore db;
     int count_n=0;
     private FirebaseAuth auth;
-
+    Intent mIntent;
 
     public IfonicNotificationService() {
     }
@@ -35,6 +35,7 @@ public class IfonicNotificationService extends Service {
     public void onCreate() {
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance(); //Menghubungkan dengan Firebase Authentifikasi
+        mIntent = new Intent(this, ChatRoomMe.class);
     }
     @Override
     public IBinder onBind(Intent intent) {
@@ -69,10 +70,6 @@ public class IfonicNotificationService extends Service {
             notificationManager.createNotificationChannel(mChannel);
         }
 
-        Intent mIntent = new Intent(this, ChatRoomMe.class);
-        //Bundle bundle = new Bundle();
-        //bundle.putString("fromnotif", "notif");
-        //mIntent.putExtras(bundle);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,NOTIFICATION_CHANNEL_ID);

@@ -16,7 +16,5 @@ public class ShowID extends AppCompatActivity {
         TextView id=findViewById(R.id.id_pelanggan);
         auth = FirebaseAuth.getInstance();
         id.setText(auth.getCurrentUser().getEmail());
-
-
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -111,7 +112,6 @@ public class SettingLayout extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_bar, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
     // handle button activities
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -150,14 +150,14 @@ public class SettingLayout extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(),"Disimpan",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Disimpan",Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(),"Penyimpanan gagal",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Penyimpanan gagal",Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -170,7 +170,7 @@ public class SettingLayout extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         auth.signOut();
-                        Toast.makeText(SettingLayout.this, "Ande telah Logout", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SettingLayout.this, "Ande telah Logout", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -182,6 +182,11 @@ public class SettingLayout extends AppCompatActivity {
                 });
 
         AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        try {
+            alertDialog.show();
+        }
+        catch (WindowManager.BadTokenException e) {
+            Toast.makeText(getApplicationContext(), "Error : "+e, Toast.LENGTH_LONG).show();
+        }
     }
 }

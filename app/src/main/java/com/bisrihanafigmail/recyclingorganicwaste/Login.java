@@ -36,7 +36,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     private FirebaseAuth firebaseAuth; //Untuk Autentifikasi
     private FirebaseAuth.AuthStateListener authStateListener; //Untuk Menangani Kajadian Saat Autentifikasi
     private final int RC_SIGN_ID = 9001; //Kode Unik Untuk SignIn
-    private final String TAG = "SignInAcivity";  //Untuk Log Debugging
     private FirebaseAnalytics firebaseAnalytics;
     Intent notifService;
 
@@ -99,8 +98,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     }
     //Untuk Mengangani Kejadian Saat Pengguna Berhasil Login
     private void firebaseAuthWithGoogle(GoogleSignInAccount account){
-        Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -120,7 +117,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.OnConnec
     //Menagani Kejadian Saat Gagal Koneksi
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "OnConnectionFailed" + connectionResult);
         progressDialog.dismiss();
         Toast.makeText(getApplicationContext(),"Koneksi Tidak Terhubung", Toast.LENGTH_SHORT).show();
     }

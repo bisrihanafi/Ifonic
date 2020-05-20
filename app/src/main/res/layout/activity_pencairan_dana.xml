@@ -25,7 +25,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:text="Penting : \nPastikan panel ini  tetap terbuka ketika sedang melakukan mencairan dana"
-        android:textAlignment="viewStart"
+        android:textAlignment="center"
         android:textColor="#F65858"
         android:textSize="18sp"
         android:textStyle="italic"

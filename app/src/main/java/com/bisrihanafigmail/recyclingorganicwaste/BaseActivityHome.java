@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,12 +40,11 @@ public class BaseActivityHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_home);
-        ImageButton setting= findViewById(R.id.pengaturan);
-        ImageButton stor = findViewById(R.id.stor);
-        ImageButton pencairan = findViewById(R.id.pencairan);
-        ImageButton chat = findViewById(R.id.chat);
+        CardView setting= findViewById(R.id.pengaturan);
+        CardView stor = findViewById(R.id.stor);
+        CardView pencairan = findViewById(R.id.pencairan);
+        CardView chat = findViewById(R.id.xchat);
         ImageButton help = findViewById(R.id.helpbase);
-        TextView chat2 = findViewById(R.id.chat2);
         deposit=findViewById(R.id.deposit);
         last_in=findViewById(R.id.pemasukan);
         last_out=findViewById(R.id.pengeluaran);
@@ -94,6 +94,7 @@ public class BaseActivityHome extends AppCompatActivity {
                         }
                     }
                 });
+
         stor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -136,24 +137,14 @@ public class BaseActivityHome extends AppCompatActivity {
                 }else {
                     openDialogMe2(view);
                 }
-
             }
         });
-
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(BaseActivityHome.this, ChatRoomMe.class));
             }
         });
-        chat2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(BaseActivityHome.this, ChatRoomMe.class));
-            }
-        });
-
-
     }
     void ambildata(){
         db.collection("users").document(auth.getCurrentUser().getEmail())
@@ -167,7 +158,6 @@ public class BaseActivityHome extends AppCompatActivity {
                         if (snapshot != null && snapshot.exists()) {
                             Map<String, Object> map= (Map<String, Object>) snapshot.getData().get("informasi");
                             Map<String, Object> map2= (Map<String, Object>) map.get("user_basic");
-                            //Toast.makeText(getApplicationContext(),map3.get("nama").toString(),Toast.LENGTH_LONG).show();
                             setUiApp(map2.get("deposit").toString(), map2.get("last_in").toString(),map2.get("last_out").toString());
                         } else {
                             buatDatabase();
@@ -205,7 +195,6 @@ public class BaseActivityHome extends AppCompatActivity {
 
         Date currentTime = Calendar.getInstance().getTime();
 
-
         //penarikan
         Map<String, Object> last_out_inf = new HashMap<>();
         last_out_inf.put("jumlah", 0);
@@ -223,14 +212,12 @@ public class BaseActivityHome extends AppCompatActivity {
         // Add a new document with a generated ID
         db.collection("users").document(auth.getCurrentUser().getEmail()).set(user);
 
-
         Map<String, Object> pesan = new HashMap<>();
         pesan.put("count", 0);
         pesan.put("time", currentTime.toString());
         pesan.put("from", "System");
-        pesan.put("fill", "Hallo, selamat datang di chat room");
+        pesan.put("fill", "Hallo, selamat bergabung dengan Ifonic");
         db.collection("users").document(auth.getCurrentUser().getEmail()).collection("chat").document().set(pesan);
-
     }
     @Override
     protected void onStart() {
@@ -253,7 +240,7 @@ public class BaseActivityHome extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         startActivity(new Intent(BaseActivityHome.this, PencairanDana.class));
-                        Toast.makeText(BaseActivityHome.this, "Panel terbuka", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Panel terbuka", Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -261,6 +248,7 @@ public class BaseActivityHome extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
+
                     }
                 });
 
@@ -269,7 +257,7 @@ public class BaseActivityHome extends AppCompatActivity {
             alertDialog.show();
         }
         catch (WindowManager.BadTokenException e) {
-            System.err.println("Error saat menampilkan kotak dialog");
+            Toast.makeText(getApplicationContext(), "Error : "+e, Toast.LENGTH_LONG).show();
         }
     }
     public void openDialogMe2(View view) {
@@ -288,7 +276,7 @@ public class BaseActivityHome extends AppCompatActivity {
             alertDialog.show();
         }
         catch (WindowManager.BadTokenException e) {
-            System.err.println("Error saat menampilkan kotak dialog");
+            Toast.makeText(getApplicationContext(), "Error : "+e, Toast.LENGTH_LONG).show();
         }
     }
 }

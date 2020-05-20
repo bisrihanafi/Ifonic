@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -84,34 +83,28 @@ public class FormInputUser extends AppCompatActivity {
                 }
             }
         });
-
     }
     public void onRadioButtonClicked(View view) {
         // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-
-        // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.use_setting:
-                if (checked)
-                    usesetting=true;
-                    kabupaten.setVisibility(View.GONE);
-                    kecamatan.setVisibility(View.GONE);
-                    desa.setVisibility(View.GONE);
-                    dusun.setVisibility(View.GONE);
-                    rt.setVisibility(View.GONE);
-                    rw.setVisibility(View.GONE);
-                    break;
+                usesetting=true;
+                kabupaten.setVisibility(View.GONE);
+                kecamatan.setVisibility(View.GONE);
+                desa.setVisibility(View.GONE);
+                dusun.setVisibility(View.GONE);
+                rt.setVisibility(View.GONE);
+                rw.setVisibility(View.GONE);
+                break;
             case R.id.use_new:
-                if (checked)
-                    usesetting=false;
-                    kabupaten.setVisibility(View.VISIBLE);
-                    kecamatan.setVisibility(View.VISIBLE);
-                    desa.setVisibility(View.VISIBLE);
-                    dusun.setVisibility(View.VISIBLE);
-                    rt.setVisibility(View.VISIBLE);
-                    rw.setVisibility(View.VISIBLE);
-                    break;
+                usesetting=false;
+                kabupaten.setVisibility(View.VISIBLE);
+                kecamatan.setVisibility(View.VISIBLE);
+                desa.setVisibility(View.VISIBLE);
+                dusun.setVisibility(View.VISIBLE);
+                rt.setVisibility(View.VISIBLE);
+                rw.setVisibility(View.VISIBLE);
+                break;
         }
     }
     public void itemClicked(View v) {
@@ -128,8 +121,6 @@ public class FormInputUser extends AppCompatActivity {
     }
     void buatQuest(boolean use_setting, boolean use_catatan){
         // Create a new user with a first and last name
-
-
         Map<String, Object> quest = new HashMap<>();
         quest.put("id_user", auth.getCurrentUser().getEmail());
         quest.put("nama_user", auth.getCurrentUser().getDisplayName());
@@ -177,9 +168,6 @@ public class FormInputUser extends AppCompatActivity {
         quest.put("nama_admin", "");
         quest.put("keterangan", "quest");
         quest.put("time",currentTime.toString());
-        //Toast.makeText(getApplicationContext(),kabupaten_t,Toast.LENGTH_LONG).show();
-
-
         // Add a new document with a generated ID
         db.collection("quests").document(auth.getCurrentUser().getEmail())
                 .set(quest)
@@ -193,9 +181,8 @@ public class FormInputUser extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(),"Error : "+e,Toast.LENGTH_LONG).show();
                     }
                 });
-
-
     }
 }

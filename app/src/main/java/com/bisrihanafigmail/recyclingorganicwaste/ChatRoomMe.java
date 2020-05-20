@@ -14,8 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -76,7 +74,6 @@ public class ChatRoomMe extends AppCompatActivity {
     StringBuffer data;
     private FirebaseAuth auth;
     FirebaseFirestore db;
-    CollectionReference idsRef;
     EditText papanInput;
     int count_maxed=0;
     @Override
@@ -102,7 +99,6 @@ public class ChatRoomMe extends AppCompatActivity {
                     return;
                 }
 
-
                 data=new StringBuffer("");
                 count_maxed=queryDocumentSnapshots.size()+1;
                 for (DocumentSnapshot doc : queryDocumentSnapshots) {
@@ -117,7 +113,6 @@ public class ChatRoomMe extends AppCompatActivity {
                 webView.scrollBy(0, webView.getVerticalScrollbarPosition()+1000);
             }
         });
-
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

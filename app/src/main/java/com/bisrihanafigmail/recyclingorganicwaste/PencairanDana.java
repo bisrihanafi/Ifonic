@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,7 +24,6 @@ import java.util.Map;
 
 public class PencairanDana extends AppCompatActivity {
     private FirebaseAuth auth;
-    DocumentReference dbref;
     FirebaseFirestore db;
     AlertDialog alertDialog;
     AlertDialog.Builder alertDialogBuilder;
@@ -40,8 +38,7 @@ public class PencairanDana extends AppCompatActivity {
         auth = FirebaseAuth.getInstance(); //Menghubungkan dengan Firebase Authentifikasi
         alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialog = alertDialogBuilder.create();
-        dbref=db.collection("users").document(auth.getCurrentUser().getEmail());
-        dbref.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        db.collection("users").document(auth.getCurrentUser().getEmail()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
@@ -56,7 +53,6 @@ public class PencairanDana extends AppCompatActivity {
                     if (jumlah_decimal>0d && !izin){
                         openDialogConfirmPencairan(jumlah_decimal, map.get("time").toString());
                     }
-                } else {
                 }
             }
         });
@@ -81,7 +77,7 @@ public class PencairanDana extends AppCompatActivity {
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(),"Error : "+e,Toast.LENGTH_LONG).show();
                                     }
                                 });
                     }
@@ -115,7 +111,7 @@ public class PencairanDana extends AppCompatActivity {
             alertDialog.show();
         }
         catch (WindowManager.BadTokenException e) {
-            System.err.println("Error saat menampilkan kotak dialog");
+            Toast.makeText(getApplicationContext(),"Error : "+e,Toast.LENGTH_LONG).show();
         }
     }
 }

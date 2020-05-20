@@ -3,6 +3,7 @@ package com.bisrihanafigmail.recyclingorganicwaste;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,25 +54,8 @@ public class WaitingLayout extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 open(view);
-                /*
-                db.collection("quests").document(auth.getCurrentUser().getEmail())
-                        .delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                finish();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                            }
-                        });
-
-                 */
             }
         });
-
     }
     public void open(View view) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -85,15 +69,10 @@ public class WaitingLayout extends AppCompatActivity {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
+                                        Toast.makeText(WaitingLayout.this, "Permintaan dibatalkan", Toast.LENGTH_LONG).show();
                                         finish();
                                     }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                    }
                                 });
-                        Toast.makeText(WaitingLayout.this, "Permintaan dibatalkan", Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -105,6 +84,11 @@ public class WaitingLayout extends AppCompatActivity {
                 });
 
         AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        try {
+            alertDialog.show();
+        }
+        catch (WindowManager.BadTokenException e) {
+            Toast.makeText(getApplicationContext(), "Error : "+e, Toast.LENGTH_LONG).show();
+        }
     }
 }

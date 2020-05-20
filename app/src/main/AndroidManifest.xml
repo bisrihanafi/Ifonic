@@ -15,18 +15,29 @@
         <service
             android:name=".IfonicNotificationService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"
+            android:launchMode="singleTask"></service>
 
-        <activity android:name=".Help" />
-        <activity android:name=".ChatRoomMe" />
-        <activity android:name=".PencairanDana" />
-        <activity android:name=".SettingLayout" />
-        <activity android:name=".WaitingLayout" />
-        <activity android:name=".FormInputUser" />
-        <activity android:name=".ShowID" />
-        <activity android:name=".DialogPilihan" />
-        <activity android:name=".BaseActivityHome" />
-        <activity android:name=".Login">
+        <activity android:name=".Help"
+            android:launchMode="singleTask"/>
+        <activity android:name=".ChatRoomMe"
+            android:launchMode="singleTask"/>
+        <activity android:name=".PencairanDana"
+            android:launchMode="singleTask"/>
+        <activity android:name=".SettingLayout"
+            android:launchMode="singleTask"/>
+        <activity android:name=".WaitingLayout"
+            android:launchMode="singleTask"/>
+        <activity android:name=".FormInputUser"
+            android:launchMode="singleTask"/>
+        <activity android:name=".ShowID"
+            android:launchMode="singleTask"/>
+        <activity android:name=".DialogPilihan"
+            android:launchMode="singleTask"/>
+        <activity android:name=".BaseActivityHome"
+            android:launchMode="singleTask"/>
+        <activity android:name=".Login"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

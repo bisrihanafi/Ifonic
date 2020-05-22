@@ -168,8 +168,10 @@ public class FormInputUser extends AppCompatActivity {
         quest.put("nama_admin", "");
         quest.put("keterangan", "quest");
         quest.put("time",currentTime.toString());
+        quest.put("do","proses");
+
         // Add a new document with a generated ID
-        db.collection("quests").document(auth.getCurrentUser().getEmail())
+        db.collection("quests").document()
                 .set(quest)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

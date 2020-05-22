@@ -15,10 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -98,21 +95,7 @@ public class BaseActivityHome extends AppCompatActivity {
         stor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DocumentReference dbrf=db.collection("quests").document(auth.getCurrentUser().getEmail());
-                dbrf.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                startActivity(new Intent(BaseActivityHome.this, WaitingLayout.class));
-                            } else {
-                                startActivity(new Intent(BaseActivityHome.this, DialogPilihan.class));
-                            }
-                        }
-                    }
-                });
-
+                startActivity(new Intent(BaseActivityHome.this, WaitingLayout.class));
             }
         });
         setting.setOnClickListener(new View.OnClickListener() {

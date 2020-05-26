@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,6 +27,7 @@ public class PencairanDana extends AppCompatActivity {
     private FirebaseAuth auth;
     FirebaseFirestore db;
     AlertDialog alertDialog;
+    DocumentReference dref;
     AlertDialog.Builder alertDialogBuilder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,8 @@ public class PencairanDana extends AppCompatActivity {
         auth = FirebaseAuth.getInstance(); //Menghubungkan dengan Firebase Authentifikasi
         alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialog = alertDialogBuilder.create();
-        db.collection("users").document(auth.getCurrentUser().getEmail()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        dref=db.collection("users").document(auth.getCurrentUser().getEmail());
+        dref.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
@@ -64,45 +67,39 @@ public class PencairanDana extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        db.collection("users").document(auth.getCurrentUser().getEmail())
-                                .update(
-                                        "sedang_transaksi.izin", true
-                                )
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(getApplicationContext(),"Permintaan telah dikonfirmasi",Toast.LENGTH_LONG).show();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getApplicationContext(),"Error : "+e,Toast.LENGTH_LONG).show();
-                                    }
-                                });
+                        dref.update(
+                                "sedang_transaksi.izin", true
+                        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getApplicationContext(),"Permintaan telah dikonfirmasi",Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(),"Error : "+e,Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 });
         alertDialogBuilder.setNegativeButton("Tidak",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        db.collection("users").document(auth.getCurrentUser().getEmail())
-                                .update(
-                                        "sedang_transaksi.jumlah", 0,
-                                        "sedang_transaksi.izin", false
-                                )
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(getApplicationContext(),"Pencairan dibatalkan",Toast.LENGTH_LONG).show();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
-                                    }
-                                });
+                        dref.update(
+                                "sedang_transaksi.jumlah", 0,
+                                "sedang_transaksi.izin", false
+                        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getApplicationContext(),"Pencairan dibatalkan",Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                            }
+                        });
 
                     }
                 });

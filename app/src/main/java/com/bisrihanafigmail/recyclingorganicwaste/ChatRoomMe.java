@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -74,6 +75,7 @@ public class ChatRoomMe extends AppCompatActivity {
     StringBuffer data;
     private FirebaseAuth auth;
     FirebaseFirestore db;
+    DocumentReference dref;
     EditText papanInput;
     int count_maxed=0;
     @Override
@@ -90,15 +92,14 @@ public class ChatRoomMe extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
         notif_manager.cancelAll();
-        //data=" <li class=\"him\">By Other User</li>\n" +" <li class=\"me\">By this User, first message</li>\n" ;
 
-        db.collection("users").document(auth.getCurrentUser().getEmail()).collection("chat").orderBy("count").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        dref=db.collection("users").document(auth.getCurrentUser().getEmail());
+        dref.collection("chat").orderBy("count").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
                     return;
                 }
-
                 data=new StringBuffer("");
                 count_maxed=queryDocumentSnapshots.size()+1;
                 for (DocumentSnapshot doc : queryDocumentSnapshots) {
@@ -132,7 +133,7 @@ public class ChatRoomMe extends AppCompatActivity {
         chat.put("fill", isi);
         Date currentTime = Calendar.getInstance().getTime();
         chat.put("time", currentTime);
-        db.collection("users").document(auth.getCurrentUser().getEmail()).collection("chat").document().set(chat);
+        dref.collection("chat").document().set(chat);
     }
 
 }

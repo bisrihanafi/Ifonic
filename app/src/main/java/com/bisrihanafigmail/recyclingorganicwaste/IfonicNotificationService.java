@@ -29,7 +29,9 @@ public class IfonicNotificationService extends Service {
     private FirebaseAuth auth;
     Intent mIntent;
 
+
     public IfonicNotificationService() {
+
     }
     @Override
     public void onCreate() {
@@ -54,6 +56,7 @@ public class IfonicNotificationService extends Service {
                         showNotif("@" + doc.get("from").toString() + " : " + doc.get("fill").toString());
                     }
                 }
+
             }
         });
         return  START_STICKY;
@@ -87,4 +90,6 @@ public class IfonicNotificationService extends Service {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(115, builder.build());
     }
+
+
 }

@@ -15,7 +15,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,7 +39,9 @@ public class BaseActivityHome extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authStateListener;
     TextView deposit, last_in,last_out;
     FirebaseFirestore db;
+    DocumentReference dref;
     double double_deposit,min_cair=0;
+    private AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,9 +55,53 @@ public class BaseActivityHome extends AppCompatActivity {
         last_in=findViewById(R.id.pemasukan);
         last_out=findViewById(R.id.pengeluaran);
 
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         // Access a Cloud Firestore instance from your Activity
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance(); //Menghubungkan dengan Firebase Authentifikasi
+        dref = db.collection("users").document(auth.getCurrentUser().getEmail());
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
+
         //Authentifikasi Listener
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -130,23 +183,19 @@ public class BaseActivityHome extends AppCompatActivity {
         });
     }
     void ambildata(){
-        db.collection("users").document(auth.getCurrentUser().getEmail())
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e != null) {
-                            return;
-                        }
-                        if (snapshot != null && snapshot.exists()) {
-                            Map<String, Object> map= (Map<String, Object>) snapshot.getData().get("informasi");
-                            Map<String, Object> map2= (Map<String, Object>) map.get("user_basic");
-                            setUiApp(map2.get("deposit").toString(), map2.get("last_in").toString(),map2.get("last_out").toString());
-                        } else {
-                            buatDatabase();
-                        }
-                    }
-                });
+        dref.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) { return; }
+                if (snapshot != null && snapshot.exists()) {
+                    Map<String, Object> map= (Map<String, Object>) snapshot.getData().get("informasi");
+                    Map<String, Object> map2= (Map<String, Object>) map.get("user_basic");
+                    setUiApp(map2.get("deposit").toString(), map2.get("last_in").toString(),map2.get("last_out").toString());
+                } else {
+                    buatDatabase();
+                }
+            }
+        });
     }
     void setUiApp(String deposit_local, String in_local, String out_local){
         double_deposit= Math.floor(Double.parseDouble(deposit_local));
@@ -193,14 +242,14 @@ public class BaseActivityHome extends AppCompatActivity {
         user.put("sedang_transaksi", last_out_inf);
 
         // Add a new document with a generated ID
-        db.collection("users").document(auth.getCurrentUser().getEmail()).set(user);
+        dref.set(user);
 
         Map<String, Object> pesan = new HashMap<>();
         pesan.put("count", 0);
         pesan.put("time", currentTime.toString());
         pesan.put("from", "System");
         pesan.put("fill", "Hallo, selamat bergabung dengan Ifonic");
-        db.collection("users").document(auth.getCurrentUser().getEmail()).collection("chat").document().set(pesan);
+        dref.collection("chat").document().set(pesan);
     }
     @Override
     protected void onStart() {

@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -31,6 +32,7 @@ public class SettingLayout extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authStateListener;
     FirebaseFirestore db;
     EditText nama_user,kabupaten,kecamatan,desa,dusun, rt, rw;
+    DocumentReference dref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,8 @@ public class SettingLayout extends AppCompatActivity {
         rw=findViewById(R.id.rw);
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance(); //Menghubungkan dengan Firebase Authentifikasi
+        dref=db.collection("users").document(auth.getCurrentUser().getEmail());
+
         //Authentifikasi Listener
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -78,9 +82,7 @@ public class SettingLayout extends AppCompatActivity {
         email.setText(auth.getCurrentUser().getEmail());
         nama.setText(auth.getCurrentUser().getDisplayName());
 
-        db.collection("users")
-                .document(auth.getCurrentUser().getEmail())
-                .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        dref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -137,29 +139,26 @@ public class SettingLayout extends AppCompatActivity {
     }
 
     void saveValueFromUI(){
-        db.collection("users").document(auth.getCurrentUser().getEmail())
-                .update(
-                        "informasi.user_basic.nama", nama_user.getText().toString().trim(),
-                        "informasi.alamat.kabupaten", kabupaten.getText().toString().trim(),
-                        "informasi.alamat.kecamatan", kecamatan.getText().toString().trim(),
-                        "informasi.alamat.desa", desa.getText().toString().trim(),
-                        "informasi.alamat.dusun", dusun.getText().toString().trim(),
-                        "informasi.alamat.rt", rt.getText().toString().trim(),
-                        "informasi.alamat.rw", rw.getText().toString().trim()
-                )
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getApplicationContext(),"Disimpan",Toast.LENGTH_SHORT).show();
-                        finish();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(),"Penyimpanan gagal",Toast.LENGTH_SHORT).show();
-                    }
-                });
+        dref.update(
+                "informasi.user_basic.nama", nama_user.getText().toString().trim(),
+                "informasi.alamat.kabupaten", kabupaten.getText().toString().trim(),
+                "informasi.alamat.kecamatan", kecamatan.getText().toString().trim(),
+                "informasi.alamat.desa", desa.getText().toString().trim(),
+                "informasi.alamat.dusun", dusun.getText().toString().trim(),
+                "informasi.alamat.rt", rt.getText().toString().trim(),
+                "informasi.alamat.rw", rw.getText().toString().trim()
+        ).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getApplicationContext(),"Disimpan",Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(),"Penyimpanan gagal",Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
     public void openDialogMe(View view) {
